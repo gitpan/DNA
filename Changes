@@ -1,5 +1,9 @@
 Revision history for Perl extension Foo.
 
-0.01  Wed May 12 12:43:43 1999
-    - original version; created by h2xs 1.19
+0.02  Fri Nov 23 20:22:29 EST 2001
+    - Little compatibility fixes for 5.004
+    - Steve Lane pointed out these are Nucleic Acids, not Amino.
+
+0.01  April 1st, 2001
+    - original version
 

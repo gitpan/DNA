@@ -2,7 +2,7 @@ package DNA;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 my $i = 0;
 my @Acids = qw(A T C G);
@@ -11,7 +11,8 @@ open HOST, "$0" or die "Genetic resequencing failed: $!";
 
 my($code, $pod, $shebang) = ('', '', '');
 my($inpod) = 0;
-while(my $line = <HOST>) {
+my $line;
+while(defined($line = <HOST>)) {
     if( $. == 1 and $line =~ /^\#!/ ) {
         $shebang = $line;
     }
@@ -35,30 +36,30 @@ while(my $line = <HOST>) {
 close HOST;
 
 sub mutate {
-    my $aa = shift;
-    $aa = join '', map $Acids[rand @Acids], 1..4 unless int rand 1000;
-    return $aa;
+    my $na = shift;
+    $na = join '', map $Acids[rand @Acids], 1..4 unless int rand 1000;
+    return $na;
 }
 
-sub ascii_to_aa {
+sub ascii_to_na {
     my $ascii = ord shift;
-    my $aa = '';
+    my $na = '';
 
     for (1..4) {
-        $aa .= $Acids[$ascii % 4];
+        $na .= $Acids[$ascii % 4];
         $ascii = $ascii >> 2;
     }
 
-    $aa = mutate($aa);
+    $na = mutate($na);
 
-    return $aa;
+    return $na;
 }
 
-sub aa_to_ascii {
-    my $aa = mutate(shift);
+sub na_to_ascii {
+    my $na = mutate(shift);
     my $ascii = 0;
     for my $chr (0..3) {
-        $ascii += $Acids{ substr($aa, $chr, 1) } * (4 ** $chr);
+        $ascii += $Acids{ substr($na, $chr, 1) } * (4 ** $chr);
     }
 
     return chr $ascii;
@@ -73,14 +74,14 @@ sub devolve {
     while( $code =~ /($Acids{4})/g ) {
         my $segment = $idx++ % 96;
         next if $segment >= 16;
-        $perl .= aa_to_ascii($1);
+        $perl .= na_to_ascii($1);
     }
 
     return $perl;
 }
 
 sub evolutionary_junk {
-    my $junk = join ' ', map { ascii_to_aa(int rand 256) } 0..(75/5);
+    my $junk = join ' ', map { ascii_to_na(int rand 256) } 0..(75/5);
 }
 
 sub evolve {
@@ -89,11 +90,13 @@ sub evolve {
     my $chromosome = '';
     for my $idx (0..length($code) - 1) {
         my $chr = substr($code, $idx, 1);
-        $chromosome .= ascii_to_aa($chr). " ";
+        $chromosome .= ascii_to_na($chr). " ";
         unless( ($idx + 1) % (80 / 5) ) { 
             chop $chromosome;
             $chromosome .= "\n";
-            $chromosome .= evolutionary_junk()."\n" for 1..5;
+            for(1..5) {
+                $chromosome .= evolutionary_junk()."\n";
+            }
         }
     }
     
@@ -124,7 +127,7 @@ exit;
 
 =head1 NAME
 
-DNA - Encodes your Perl program into an Amino Acid sequence
+DNA - Encodes your Perl program into an Nucleic Acid sequence
 
 =head1 SYNOPSIS
 
@@ -185,6 +188,11 @@ figure out his code!
 
 The tests are encoded in DNA!  But it sometimes introduces bugs... oh
 dear.
+
+As Steve Lane pointed out, it would be better to group them into
+groups of three rather than four, as this makes a codon.  However,
+that means I can only get 6 bits on one group, and God didn't have to
+work with high ASCII.
 
 
 =head1 BUGS
