@@ -11,7 +11,7 @@ $PACKAGE = 'DNA';
 ($PACKAGE_FILE = $PACKAGE) =~ s|::|/|g;
 $LAST_API_CHANGE = 0;
 
-eval "require $PACKAGE";
+#eval "require $PACKAGE";
 
 unless ($@) { # Make sure we did find the module.
     print <<"CHANGE_WARN" if ${$PACKAGE.'::VERSION'} < $LAST_API_CHANGE;

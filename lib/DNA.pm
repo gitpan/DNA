@@ -2,7 +2,7 @@ package DNA;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 my $i = 0;
 my @Acids = qw(A T C G);
@@ -16,8 +16,7 @@ while(defined($line = <HOST>)) {
     if( $. == 1 and $line =~ /^\#!/ ) {
         $shebang = $line;
     }
-    elsif( $line =~ /^=cut / ) {
-        $pod .= $line;
+    elsif( $line =~ /^=cut/ ) {
         $inpod = 0;
     }
     elsif( $line =~ /^=\w+/ ) {
